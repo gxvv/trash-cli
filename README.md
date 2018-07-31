@@ -11,5 +11,12 @@ A cli tool for macOS that moves files or folders to the trash. It depends on `Ap
     
 ## Usage
     $ trash files or folders ...
+    Usage: ${APP_NAME} [options] [file or folder ...]
+
+    Options:
+
+        -p,--permanet Delete Permanently.
+        -e,--empty    Empty Trash.
+        -h,--help     Display Help.
 
 > When some files or folders moved to the trash, you can hear a sound like you delete files or folders manually.:relieved:
