@@ -36,7 +36,17 @@ empty_trash() {
 }
 
 display_help() {
-    echo "usage: ${APP_NAME} [[--force] file ... | --empty | --help] "
+    cat <<-EOF
+
+    Usage: ${APP_NAME} [options] [file or folder ...]
+
+    Options:
+
+        -p,--permanet Delete Permanently.
+        -e,--empty    Empty Trash.
+        -h,--help     Display Help.
+
+EOF
 }
 
 if [ $# -eq 0 ]; then
