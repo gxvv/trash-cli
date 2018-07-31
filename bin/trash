@@ -42,9 +42,9 @@ display_help() {
 
     Options:
 
-        -p,--permanet Delete Permanently.
-        -e,--empty    Empty Trash.
-        -h,--help     Display Help.
+        -p,--permanent Delete Permanently.
+        -e,--empty     Empty Trash.
+        -h,--help      Display Help.
 
 EOF
 }
