@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+APP_NAME="$(basename "$0")"
+if [ $# -eq 0 ];then
+    echo "usage: ${APP_NAME} file ..."
+	exit 2
+fi
+
+for f in "$@"
+do
+    case $f in
+        /*) fullpath=$f;;
+        *) fullpath="${PWD}/${f}";;
+    esac
+    if [[ -e $fullpath ]]; then
+        osascript -e "tell application \"Finder\" to delete ((POSIX file \"${fullpath}\") as alias)" > /dev/null
+    else
+        echo "${APP_NAME}: ${f}: No such file or directory"
+    fi
+done
