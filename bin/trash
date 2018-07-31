@@ -1,19 +1,56 @@
 #!/usr/bin/env bash
 APP_NAME="$(basename "$0")"
-if [ $# -eq 0 ];then
-    echo "usage: ${APP_NAME} file ..."
-	exit 2
-fi
+FORCE=false
 
-for f in "$@"
-do
-    case $f in
-        /*) fullpath=$f;;
-        *) fullpath="${PWD}/${f}";;
-    esac
-    if [[ -e $fullpath ]]; then
-        osascript -e "tell application \"Finder\" to delete ((POSIX file \"${fullpath}\") as alias)" > /dev/null
-    else
-        echo "${APP_NAME}: ${f}: No such file or directory"
+move_to_trash() {
+    osascript -e "tell application \"Finder\" to delete ((POSIX file \"${@}\") as alias)" > /dev/null
+}
+
+delete_permanently() {
+    osascript -e "tell application \"System Events\" to delete alias \"${@}\"" > /dev/null
+}
+
+delete() {
+    for f in "${@}"
+    do
+        case $f in
+            /*) fullpath=$f;;
+            *) fullpath="${PWD}/${f}";;
+        esac
+        if [[ -e "${fullpath}" ]]; then
+            if $FORCE; then
+                delete_permanently "${fullpath}"
+            else
+                move_to_trash "${fullpath}"
+            fi
+        else
+            echo "${APP_NAME}: ${f}: No such file or directory"
+        fi
+    done
+}
+
+empty_trash() {
+    if [ "$(ls -A ~/.Trash)" ]; then
+        osascript -e "tell application \"Finder\" to empty trash" > /dev/null
     fi
-done
+}
+
+display_help() {
+    echo "usage: ${APP_NAME} [[--force] file ... | --empty | --help] "
+}
+
+if [ $# -eq 0 ]; then
+    display_help
+	exit
+else
+    while test $# -ne 0
+    do
+        case $1 in
+            -e|--empty) empty_trash; exit ;;
+            -h|--help) display_help; exit ;;
+            -f|--force) FORCE=true;;
+            *) delete "${@}"; exit ;;
+        esac
+        shift
+    done
+fi
